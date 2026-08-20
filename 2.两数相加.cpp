@@ -42,17 +42,17 @@ long long vecToLong(vector<int>& v)
 //数字再转回逆序链表
 ListNode* longToList(long long n)
 {
-    ListNode* dummy = new ListNode();
+    ListNode* dummy = new ListNode();  //哨兵头节点
     ListNode* cur = dummy;
     if(n == 0)
     {
-        cur->next = new ListNode(0);
-        return dummy->next;
+        cur->next = new ListNode(0);  //创建新节点0
+        return dummy->next; //返回哨兵后一个节点
     }
     while(n > 0)
     {
         int d = n %10;
-        cur->next = new ListNode(d);
+        cur->next = new ListNode(d);  //创建新节点d
         cur = cur->next;
         n = n / 10;
     }
