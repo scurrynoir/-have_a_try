@@ -38,3 +38,57 @@ public:
         return ans;
     }
 };
+
+
+另：转化：   
+            *     *
+从Z字型变成：|   |   |   |
+            |   |   |   |
+              *       * 
+#include<string>
+#include<vector>
+using namespace std;
+
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        // 只有1行，Z字不存在，直接返回
+        if(numRows == 1) return s;
+
+        vector<string> rows(numRows); // numRows行，每行是一个string
+        int curRow = 0;   // 当前正在填的行号
+        bool down = false;// false向上，true向下
+
+        for(char ch : s)
+        {
+            rows[curRow].push_back(ch); //字符放到当前行
+            //到达上边界0，或者到达下边界numRows‑1，翻转方向
+            if(curRow == 0 || curRow == numRows - 1)
+            {
+                down = !down;
+            }
+            //根据方向移动行号
+            curRow += down ? 1 : -1;
+        }
+
+        //把所有行拼接成答案
+        string ans;
+        for(string &str : rows)
+        {
+            ans += str;
+        }
+        return ans;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
