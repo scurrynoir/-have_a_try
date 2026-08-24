@@ -41,5 +41,26 @@ public:
     }
 };
 
+标答：不转字符串，纯数字反转
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        //负数、末尾是0但本身不是0，直接false
+        if(x < 0 || (x != 0 && x % 10 == 0))
+            return false;
+
+        int reverseHalf = 0;
+        while(x > reverseHalf)
+        {
+            int digit = x % 10;
+            reverseHalf = reverseHalf * 10 + digit;
+            x = x / 10;
+        }
+        //偶数位：x == reverseHalf；奇数位去掉中间数字 x == reverseHalf/10
+        return x == reverseHalf || x == reverseHalf / 10;
+    }
+};
+
+
 
 
