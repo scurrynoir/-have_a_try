@@ -48,3 +48,47 @@ public:
     }
 };
 
+另：暴力：递归回溯（不带 DP，纯暴力）
+class Solution {
+public:
+    bool dfs(string &s, string &p, int i, int j)
+    {
+        // 全部走完
+        if(i == s.size() && j == p.size())
+            return true;
+        // p走完了，s还有剩余，失败
+        if(j == p.size())
+            return false;
+
+        bool nextIsStar = (j+1 < p.size() && p[j+1] == '*');
+
+        if(nextIsStar)
+        {
+            // 选项1：x*匹配0次，直接跳过这一组 x*
+            bool op0 = dfs(s,p,i, j+2);
+
+            // 选项2：当前字符匹配，x*匹配一次，s前进
+            bool op1 = false;
+            if(i < s.size() && (s[i]==p[j] || p[j]=='.'))
+            {
+                op1 = dfs(s,p,i+1, j);
+            }
+            return op0 || op1;
+        }
+        else
+        {
+            //没有*，普通匹配
+            if(i < s.size() && (s[i]==p[j] || p[j]=='.'))
+            {
+                return dfs(s,p,i+1,j+1);
+            }
+            return false;
+        }
+    }
+
+    bool isMatch(string s, string p) {
+        return dfs(s,p,0,0);
+    }
+};
+
+
