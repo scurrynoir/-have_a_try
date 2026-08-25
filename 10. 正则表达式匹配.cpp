@@ -91,4 +91,50 @@ public:
     }
 };
 
+标答：动态规划
+#include <string>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int ns = s.size();
+        int np = p.size();
+        vector<vector<bool>> dp(ns+1, vector<bool>(np+1, false));
+        dp[0][0] = true;
+
+        //初始化：处理p开头有 a* b*这种，可以匹配空s
+        for(int j = 2; j <= np; j++){
+            if(p[j-1] == '*'){
+                dp[0][j] = dp[0][j-2];
+            }
+        }
+
+        for(int i = 1; i <= ns; i++)
+        {
+            for(int j = 1; j <= np; j++)
+            {
+                if(p[j-1] != '*')
+                {
+                    //普通字符 or '.'
+                    dp[i][j] = dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='.');
+                }
+                else
+                {
+                    // p[j-1]是 *
+                    // 情况1：x*取0次；情况2：x*取多次
+                    dp[i][j] = dp[i][j-2];
+                    if(s[i-1]==p[j-2] || p[j-2]=='.')
+                    {
+                        dp[i][j] = dp[i][j] || dp[i-1][j];
+                    }
+                }
+            }
+        }
+        return dp[ns][np];
+    }
+};
+
+
 
