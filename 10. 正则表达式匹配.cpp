@@ -5,48 +5,65 @@ using namespace std;
 
 class Solution {
 public:
+    // s：原字符串；p：正则模式串
+    // j：p当前处理到的下标
+    // cur：vector<char>，当前递归分支生成出来的模式字符串
     bool dfs(string &s, string &p, int j, vector<char> cur){
-        //模式串走完，对比cur和s
+        // ========= 递归终止条件：模式串全部处理完毕 =========
         if(j == p.size()){
+            // 如果生成出来的cur长度和s不一样，直接不匹配
             if(cur.size() != s.size()) return false;
+            // 逐个字符对比cur和s
             for(int k=0;k<s.size();k++){
                 if(cur[k] != s[k]) return false;
             }
+            // 全部字符相等 → 匹配成功
             return true;
         }
 
+        // 判断：p下一个字符是不是 *
+        // j+1不能越界，同时p[j+1]等于'*'
         bool nextStar = (j+1 < p.size() && p[j+1] == '*');
+
         if(nextStar){
-            char ch = p[j];
-            //分支1：x*匹配0次，跳过x*
+            char ch = p[j];   // *前面的那个字符 x，也就是 x* 的x
+
+            // --------分支1：x*匹配0次，完全不用这个字符，直接跳过x*这两个字符 j+2 --------
             if(dfs(s,p,j+2, cur)) return true;
 
-            //分支2：匹配一次ch，继续可以再匹配（j不变）
+            // --------分支2：x*匹配1次，把ch加入cur，j不变（还可以继续重复匹配这个x）--------
             cur.push_back(ch);
-            //剪枝：cur长度超过s就不要再往下走
+
+            // 剪枝：cur已经比s长了，继续push只会更长，没必要递归，防止无限递归
             if(cur.size() <= s.size()){
+                // j不变！还停在x的位置，下一轮还可以继续选匹配多次
                 if(dfs(s,p,j, cur)) return true;
             }
+
+            // 0次分支、多次分支都走不通，返回false
             return false;
         }else{
-            //普通字符 或者 .
+            // ================= 没有*，普通字符 或者 . =================
             if(p[j] == '.'){
-                //.必须匹配当前s对应位置的真实字符！不能随便塞'A'
-                //这里关键：cur长度不能超过s
-                if(cur.size() >= s.size()) return false;
+                // .代表任意一个字符，不能随便塞一个假字符
+                // cur现在的长度，就是即将填充的位置，直接拿s对应位置真实字符放入cur
+                if(cur.size() >= s.size()) return false; // s已经用完，还需要填字符，失败
                 cur.push_back(s[cur.size()]); 
             }else{
+                // 普通字符，直接把模式字符放进cur
                 cur.push_back(p[j]);
             }
+            // 当前位置处理完成，处理p下一个字符 j+1
             return dfs(s,p,j+1, cur);
         }
     }
 
     bool isMatch(string s, string p) {
-        vector<char> tmp;
-        return dfs(s,p,0,tmp);
+        vector<char> tmp; // 初始是空vector，用来存递归生成的字符串
+        return dfs(s,p,0,tmp); // 从p下标0开始递归
     }
 };
+
 
 另：暴力：递归回溯（不带 DP，纯暴力）
 class Solution {
