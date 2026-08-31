@@ -73,3 +73,46 @@ public:
 };
 
 
+另：哈希表打法：
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> ans;
+        int n = nums.size();
+        sort(nums.begin(), nums.end()); // 排序主要为了方便去重
+        
+        for(int i = 0; i < n; i++)
+        {
+            // i位置去重，跳过相同数字，避免重复
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+
+            unordered_set<int> st;
+            int target = -nums[i];
+
+            for(int j = i + 1; j < n; j++)
+            {
+                int need = target - nums[j];
+                if(st.count(need))
+                {
+                    ans.push_back({nums[i], need, nums[j]});
+                    // j去重：跳过后面相等元素，防止重复
+                    while(j + 1 < n && nums[j] == nums[j+1])
+                    {
+                        j++;
+                    }
+                }
+                st.insert(nums[j]);
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+
