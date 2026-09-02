@@ -123,3 +123,47 @@ public:
         return ret;
     }
 };
+
+
+标准回溯写法（力扣 AC，对比记忆）：
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        // res：存储最终全部组合结果
+        vector<string> res;
+
+        // 特判：输入是空字符串，直接返回空结果
+        if(digits.empty()) return res;
+
+        // mp下标对应电话号码数字：mp[2]就是"abc"，mp[0]、mp[1]为空字符串
+        vector<string> mp={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+
+        // path：DFS递归过程，保存当前正在拼接的路径字符串
+        string path;
+
+        // function<void(int)> 定义一个可调用对象，接收int参数，无返回值；lambda表达式实现dfs
+        // [&] 捕获列表：以引用方式捕获外部所有变量(res, digits, mp, path)，lambda内部可以修改外部变量
+        function<void(int)> dfs=[&](int idx){
+            // 递归终止条件：idx等于digits总长度，代表一条完整组合已经生成完毕
+            if(idx==digits.size()){
+                res.push_back(path); // 把当前路径保存到答案集合
+                return;              // 返回，回溯
+            }
+
+            // 当前处理的字符转成数字，例如 '2'-'0' → 2
+            int num=digits[idx]-'0';
+
+            // 遍历这个数字对应的每一个字母
+            for(char c:mp[num]){
+                path.push_back(c);   // 选择：把字符c加入当前路径
+                dfs(idx+1);          // 递归，处理下一个数字位置
+                path.pop_back();     // 回溯！撤销上一步选择，恢复path，尝试下一个字母
+            }
+        };
+
+        dfs(0); // 从下标0开始启动深度优先搜索
+
+        return res; // 返回全部字母组合
+    }
+};
+
