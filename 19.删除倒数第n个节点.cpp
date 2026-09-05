@@ -43,3 +43,36 @@ public:
         return head;
     }
 };
+
+正解：快慢指针
+fast 先往前走 n 步；然后 fast、slow 一起走，fast 走到 null 时，slow 就是要删节点的前驱。
+
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // 虚拟头结点，完美规避删除头结点特殊判断
+        ListNode* dummy = new ListNode(0, head);
+        ListNode* fast = dummy;
+        ListNode* slow = dummy;
+
+        // fast先走n步
+        for(int i = 0; i < n; i++){
+            fast = fast->next;
+        }
+        // fast、slow一起往后走，直到fast走到末尾nullptr
+        while(fast->next != nullptr){
+            fast = fast->next;
+            slow = slow->next;
+        }
+        // slow->next 就是要删除的节点
+        ListNode* del = slow->next;
+        slow->next = slow->next->next;
+        delete del;
+
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+
