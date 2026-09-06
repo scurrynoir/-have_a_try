@@ -82,5 +82,52 @@ public:
     }
 };
 
+法二：小根堆优先队列
+#include <queue>
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+
+// 堆的比较规则
+struct cmp{
+    bool operator()(ListNode* a, ListNode* b){
+        return a->val > b->val;
+    }
+};
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode*, vector<ListNode*>, cmp> minHeap;
+        // 将每个链表头入堆
+        for(auto node : lists){
+            if(node != nullptr){
+                minHeap.push(node);
+            }
+        }
+        ListNode* dummy = new ListNode(0);
+        ListNode* cur = dummy;
+        while(!minHeap.empty()){
+            ListNode* top = minHeap.top();
+            minHeap.pop();
+            cur->next = top;
+            cur = cur->next;
+            // 当前链表还有后续节点，继续入堆
+            if(top->next != nullptr){
+                minHeap.push(top->next);
+            }
+        }
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+
+
+
 
 
