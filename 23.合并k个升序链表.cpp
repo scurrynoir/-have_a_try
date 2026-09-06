@@ -48,4 +48,39 @@ public:
     }
 };
 
+法一：暴力
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        vector<int> arr;
+        // 把所有链表的值收集
+        for(auto node : lists){
+            while(node != nullptr){
+                arr.push_back(node->val);
+                node = node->next;
+            }
+        }
+        sort(arr.begin(), arr.end());
+        // 虚拟头结点
+        ListNode* dummy = new ListNode(0);
+        ListNode* cur = dummy;
+        for(int num : arr){
+            cur->next = new ListNode(num);
+            cur = cur->next;
+        }
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+
+
 
